@@ -1,0 +1,105 @@
+---
+## Must have both ansible.windows and community.windows collections installed
+## To Install run the following on the machine you are running Ansible on:
+## ansible-galaxy collection install ansible.windows
+## ansible-galaxy collection install community.windows
+## You mus also run the WinRM Memory Hotfix and WinRM Setup scripts on the Window server to allow WinRM to accept connections from Ansible
+## The doc is here: https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html
+#- name: Configure Windows
+#  hosts: win
+#  roles:
+#    - role: winCreate
+#      state: present
+#    - role: winUsers
+#      state: present
+#    - role: winDelegate
+#      state: present
+- name: Configure Users
+  hosts: all:!win
+  become: True
+  roles:
+  - role: local_users
+    state: present
+## Need to choose which method to update systems with.
+#- name: Subscribe systems to RH CDN
+#  hosts: all
+#  become: True
+#  roles:
+#  - role: subscribe-cdn
+#    state: present
+- name: Subscribe systems to local satellite
+  hosts: all:!win
+  become: True
+  roles:
+  - role: subscribe-sat
+    state: present
+- name: Configure DNS on servers
+  hosts: all:!ipaserver:!win
+  gather_facts: false
+  become: true
+  roles:
+  - role: dns-resolve
+    state: present
+## Must have the ansible-freeipa rpm package installed.
+- name: Installs the IdM server
+  import_playbook: /usr/share/doc/ansible-freeipa/playbooks/install-server.yml
+- name: Turn IdM DNS PTR Sync on
+  hosts: ipaserver
+  gather_facts: false
+  become: false
+  roles:
+  - role: idm-dnsconfig
+    state: present
+- name: Installs the IdM replicas
+  import_playbook: /usr/share/doc/ansible-freeipa/playbooks/install-replica.yml
+#- name: Installs the IdM clients
+#  import_playbook: /usr/share/doc/ansible-freeipa/playbooks/install-client.yml
+#- name: Sets up the AD trust.
+#  hosts: ipaserver
+#  gather_facts: false
+#  become: True
+#  roles:
+#  - role: idm-dns_ad_setup
+#    state: present
+#- name: Create IdM users
+#  hosts: ipaserver
+#  gather_facts: false
+#  become: True
+#  roles:
+#  - role: idm-test-users
+#    state: present
+#- name: Create external group for AD Users/Groups
+#  hosts: ipaserver
+#  gather_facts: false
+#  become: True
+#  roles:
+#  - role: idm-groups
+#    state: present
+#- name: Create client host group
+#  hosts: ipaserver
+#  gather_facts: false
+#  become: false
+#  roles:
+#  - role: idm-hostgroup
+#    state: present
+#- name: Create HBAC Rules
+#  hosts: ipaserver
+#  gather_facts: false
+#  become: False
+#  roles:
+#  - role: idm-hbac
+#    state: present
+#- name: Enable sudo on clients
+#  hosts: ipaclients
+#  gather_facts: false
+#  become: true
+#  roles:
+#  - role: sudo-sssd
+#    state: present
+#- name: Create IdM SUDO rules
+#  hosts: ipaserver
+#  gather_facts: false
+#  become: False
+#  roles:
+#  - role: idm-sudo
+#    state: present

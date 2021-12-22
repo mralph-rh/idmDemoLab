@@ -1,0 +1,25 @@
+---
+# tasks file for idm-hbac
+- name: HBAC Rule on what group can SSH to a server
+  ipahbacrule:
+    ipaadmin_password: "{{ admin_password }}"
+    name: client_ssh
+    hbacsvc:
+    - sshd
+    group:
+    - intextadgrp
+    host:
+    - rh8.lab8.example.com
+- name: HBAC Rule for IdM administrator
+  ipahbacrule:
+    ipaadmin_password: "{{ admin_password }}"
+    name: admin_access
+    servicecat: all
+    hostcat: all
+    group:
+    - idmadmins
+- name: Disable allow_all HBAC Rule
+  ipahbacrule:
+    ipaadmin_password: "{{ admin_password }}"
+    name: allow_all
+    state: disabled

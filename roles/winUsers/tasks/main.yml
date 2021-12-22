@@ -1,0 +1,18 @@
+---
+# tasks file for winUsers
+- name: Create AD Group for IdM Integration
+  ansible.windows.win_group:
+    name: "{{ ad_grp_name }}"
+    state: present
+- name: AD Users for IdM Integration
+  community.windows.win_domain_user:
+    name: "{{ item.ad_user_name }}"
+    firstname: "{{ item.ad_user_first }}"
+    surname: "{{ item.ad_user_last }}"
+    password: "{{ ad_idm_password }}"
+    state: present
+    groups:
+      - "{{ ad_grp_name }}"
+    domain_username: '{{ ad_netbios }}\Administrator'
+    domain_password: "{{ admin_password }}"
+  with_items: "{{ ad_idm_users }}"

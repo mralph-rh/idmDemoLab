@@ -1,0 +1,90 @@
+all:
+  children:
+    win:
+      hosts:
+        win.example.com:
+          ansible_user: Administrator
+          ansible_password: "{{ admin_password }}"
+          ansible_connection: winrm
+          ansible_winrm_server_cert_validation: ignore
+    ipaserver:
+      hosts: 
+        idm.lab.example.com: null
+    ipareplicas:
+      hosts: 
+        rep.lab.example.com: null
+    ipaclients:
+      hosts: 
+        client.lab.example.com: null
+    ipacluster:
+      ipaserver: null
+      ipareplicas: null
+      ipaclients: null
+  vars:
+## IPA Info
+    domain: "{{ idm_short }}.{{ ad_domain }}"
+    ipaserver_domain: "{{ domain }}"
+    ipaserver_realm: "{{ domain | upper}}"
+    ipaadmin_password: "{{ admin_password }}"
+    ipadm_password: "{{ admin_password }}"
+    ipaserver_setup_dns: yes
+    ipaserver_setup_adtrust: yes
+    ipaserver_setup_kra: yes
+    ipaserver_reverse_zones: "" # example - 1.168.192.in-addr.arpa
+    ipaserver_allow_zone_overlap: yes
+    ipaserver_no_forwarders: yes
+    ipaserver_no_dnssec_validation: yes
+    ipaserver_netbios_name: "{{ idm_short | upper }}"
+    ipaserver_firewalld_zone: public
+    ipareplica_no_forwarders: yes
+    ipareplica_allow_zone_overlap: yes
+    ipareplica_setup_adtrust: yes
+    ipareplica_no_dnssec_validation: yes
+    ipareplica_setup_ca: yes
+    ipareplica_setup_dns: yes
+    ipareplica_firewalld_zone: public
+    ipaclient_mkhomedir: yes
+## IdM User Creation
+    first_users: '2001' # UID to start with for test users
+    last_users: '2003' # UID to end with for test users
+    user_password: 'password123!' # test user password
+    idm_users: # IdM admins name
+      - { idm_name: example_idm, idm_first: First, idm_last: Last }
+## IdM Configuration
+    idm_short: "" # Shortname, example - lab
+    host_group: '' # IdM host group name
+## AD Info
+    ad_password: "{{ admin_password }}" # AD administrator password
+    ad_domain: 'example.com' # AD domain, usually the root of your IdM
+    ad_ip: '' # AD IP
+    ad_netbios: "EXAMPLE"
+    idm_pri: "idm.{{ domain }}"
+    idm_DNS1: '' # primary IdM IP address
+### The below lines are not needed if you are only running a single IdM server.
+    idm_rep: "rep.{{ domain }}"
+    idm_DNS2: '' # replica IdM IP address
+## AD Enterprise User/Group Creation
+    ad_users: # AD enterprise admin name, needed for AD Trust creation
+      - { ad_name: example_ad, ad_first: First, ad_last: Last }
+    ad_grp_name: ad-idm-users
+    ad_idm_users: # Test users
+      - { ad_user_name: aduser1, ad_user_first: AD, ad_user_last: User1 }
+      - { ad_user_name: aduser2, ad_user_first: AD, ad_user_last: User2 }
+      - { ad_user_name: aduser3, ad_user_first: AD, ad_user_last: User3 }
+    ad_idm_password: "password123!" # test user password
+## Local User Info
+    local_user: '' # UID for local user created during initial build of system, also used for SSO GUI login
+    ssh_key: '/home/xxx/.ssh/id_rsa.pub' # Location of the ssh key to be used for the local user
+### If you want to add an extra local user
+    addlocal_user:
+    - { luser_name: lusername, luser_full: luserFullname, luser_pass: Encrypted_passwd }
+## Satellite Info
+    sat_ip: '' # Satellite IP
+    satellite: '' # Satellite fqdn
+    satKey7: '' # Activation key for RHEL 7 servers
+    satKey8: '' # Activation key for RHEL 8 servers
+    satCDN_user: '' # customer portal account username if using the CDN to register and update the servers
+    satCDN_passwd: '' # customer portal account pasword if using the CDN to register and update the servers
+## Global Info
+    admin_password: '' # Admin password used for all applications and admin users
+
