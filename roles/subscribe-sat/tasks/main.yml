@@ -27,6 +27,12 @@
     activationkey: '{{ satKey8 }}'
     org_id: 'Red_Hat'
   when: ansible_facts['distribution_major_version'] == "8"
+- name: Subscribe RHEL 8 servers
+  redhat_subscription:
+    state: present
+    activationkey: '{{ satKey9 }}'
+    org_id: 'Red_Hat'
+  when: ansible_facts['distribution_major_version'] == "9"
 - name: Install Cockpit on RHEL 7
   yum:
     name: cockpit

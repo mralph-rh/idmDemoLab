@@ -26,7 +26,7 @@
     hbacsvcgroup: # Service(s) for the rule
     - web_services
     group: # User group
-    - intextadgrp
+    - int-adusergrp
     hostgroup: # Host name
     - "{{ host_group }}"
 - name: HBAC Rule for IdM administrator
@@ -36,7 +36,7 @@
     servicecat: all # All services
     hostcat: all # All hosts
     group: # User group
-    - idmadmins
+    - idm-admins
 - name: Disable allow_all HBAC Rule 
   ipahbacrule: # Rule to allow admins full access
     ipaadmin_password: "{{ admin_password }}" # IdM Admin password

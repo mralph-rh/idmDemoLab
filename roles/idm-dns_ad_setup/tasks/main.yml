@@ -16,6 +16,6 @@
   ipatrust:
     ipaadmin_password: "{{ admin_password }}"
     realm: "{{ ad_domain }}"
-    admin: Administrator
+    admin: delegate
     password: "{{ ad_password }}"
     state: present

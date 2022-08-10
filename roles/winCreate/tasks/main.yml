@@ -11,18 +11,18 @@
     state: domain_controller
 - name: Reboot the machine with all defaults
   ansible.windows.win_reboot:
-- name: Create Enterprise Admin User
-  community.windows.win_domain_user:
-    name: "{{ item.ad_name }}"
-    firstname: "{{ item.ad_first }}"
-    surname: "{{ item.ad_last }}"
-    password: "{{ admin_password }}"
-    state: present
-    groups:
-      - Enterprise Admins
-    domain_username: '{{ ad_netbios }}\Administrator'
-    domain_password: "{{ admin_password }}"
-  with_items: "{{ ad_users }}"
+#- name: Create Enterprise Admin User
+#  community.windows.win_domain_user:
+#    name: "{{ item.ad_name }}"
+#    firstname: "{{ item.ad_first }}"
+#    surname: "{{ item.ad_last }}"
+#    password: "{{ admin_password }}"
+#    state: present
+#    groups:
+#      - Enterprise Admins
+#    domain_username: '{{ ad_netbios }}\Administrator'
+#    domain_password: "{{ admin_password }}"
+#  with_items: "{{ ad_users }}"
 - name: Delegate IdM Zone to IdM Primary
   ansible.windows.win_powershell:
     script: Add-DnsServerZoneDelegation -Name "{{ ad_domain }}" -ChildZoneName "{{ idm_short }}" -NameServer "{{ idm_pri }}" -IPAddress {{ idm_DNS1 }}
