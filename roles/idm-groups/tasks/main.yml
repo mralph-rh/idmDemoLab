@@ -8,7 +8,7 @@
     description: "External group for AD Users"
     external: yes
     externalmember: 
-      - '{{ ad_grp_users }}@{{ ad_domain }}'
+      - '{{ ad_grp_users }}@{{ root_domain }}'
     state: present
 - name: Create External Group for AD admins group
   ipagroup:
@@ -17,7 +17,7 @@
     description: "External group for AD Users"
     external: yes
     externalmember: 
-      - '{{ ad_grp_admins }}@{{ ad_domain }}'
+      - '{{ ad_grp_admins }}@{{ root_domain }}'
     state: present
 - name: Create Internal group for External AD users group
   ipagroup:

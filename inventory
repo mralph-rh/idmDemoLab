@@ -18,7 +18,7 @@ all:
           ipaserver_allow_zone_overlap: yes
           ipaserver_no_forwarders: yes
           ipaserver_no_dnssec_validation: yes
-          ipaserver_netbios_name: "{{ idm_short | upper }}"
+          ipaserver_netbios_name: "{{ shortname | upper }}"
           ipaserver_firewalld_zone: public
     ipareplicas:
       hosts: 
@@ -56,8 +56,12 @@ all:
               address: "{{ ansible_default_ipv4.address }}/24"
               gateway4: "{{ ansible_default_ipv4.gateway }}"   
   vars:
+## Global
+    admin_password: '' # Admin password used for all applications
+    domain: "{{ shortname }}.{{ root_domain }}"
+    root_domain: 'example.com' # AD domain, usually the root of your IdM
+    shortname: "web"
 ## IPA Info
-    domain: "{{ idm_short }}.{{ ad_domain }}"
     ipaadmin_password: "{{ admin_password }}"
     ipadm_password: "{{ admin_password }}"
 ## IdM User Creation
@@ -70,18 +74,16 @@ all:
       - { idm_name: johnd_idm, idm_first: John, idm_last: Doe }
       - { idm_name: janed_idm, idm_first: Jane, idm_last: Doe }
 ## IdM Configuration
-    idm_short: "demo"
     host_group: "ipaclients"
 ## AD Info
     ad_password: "{{ admin_password }}" # AD administrator password
-    ad_domain: 'example.com' # AD domain, usually the root of your IdM
     ad_ip: '192.168.1.5' # AD IP
     ad_netbios: "EXAMPLE"
     idm_pri: "idm.{{ domain }}"
-    idm_DNS1: '192.168.1.2' # primary IdM IP address
+    idm_DNS1: '192.168.1.52' # primary IdM IP address
 ### The below lines are not needed if you are only running a single IdM server.    
     idm_rep: "rep.{{ domain }}"
-    idm_DNS2: '192.168.1.3' # replica IdM IP address
+    idm_DNS2: '192.168.1.53' # replica IdM IP address
 ## AD Enterprise User/Group Creation
     ad_idm_admins: # AD enterprise admin name, needed for AD Trust creation
       - { ad_name: johnd_ad, ad_first: John, ad_last: Doe }
@@ -93,11 +95,6 @@ all:
       - { ad_name: aduser2, ad_first: AD, ad_last: User2 }
       - { ad_name: aduser3, ad_first: AD, ad_last: User3 }
     ad_idm_password: "Redhat123!"
-## Local User Info
-    local_user: 'johnd' # UID for local user created during initial build of system, also used for SSO GUI login
-    ssh_key: '/home/johnd/.ssh/id_rsa.pub' # Location of the ssh key to be used for the local user
-    addlocal_user:
-    - { luser_name: 'janed', luser_full: 'Jane Doe', luser_pass: '<ssh.pub key>' }
 ## Satellite Info
     sat_ip: '' # Satellite IP
     satellite: '' # Satellite fqdn
@@ -106,5 +103,4 @@ all:
     satKey9: '' # Activation key for RHEL 9 servers
     satCDN_user: '' # customer portal account username if using the CDN to register and update the servers
     satCDN_passwd: '' # customer portal account pasword if using the CDN to register and update the servers
-## Global Info
-    admin_password: 'RedHat123!' # Admin password used for all applications
+    

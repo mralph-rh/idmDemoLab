@@ -4,7 +4,7 @@
   ipadnsforwardzone:
     ipaadmin_password: "{{ admin_password }}"
     state: present
-    name: "{{ ad_domain }}"
+    name: "{{ root_domain }}"
     forwarders:
       - ip_address: "{{ ad_ip }}"
     forwardpolicy: only
@@ -15,7 +15,7 @@
 - name: Configure AD trust
   ipatrust:
     ipaadmin_password: "{{ admin_password }}"
-    realm: "{{ ad_domain }}"
+    realm: "{{ root_domain }}"
     admin: delegate
     password: "{{ ad_password }}"
     state: present
