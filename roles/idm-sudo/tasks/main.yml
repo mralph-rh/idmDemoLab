@@ -30,6 +30,6 @@
     allow_sudocmdgroup:
     - archive_group
     runasuser: root
-    group: intextadgrp
+    group: int-adusergrp
     hostgroup: ipaclients
     
